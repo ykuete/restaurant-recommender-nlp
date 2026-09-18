@@ -68,9 +68,9 @@ streamlit run src/app.py
 
 ## Team
 
-**Yannick Kuete**
-**Luc Dinh**
-**Tej Kandimalla**
+#**Yannick Kuete**
+#**Luc Dinh**
+#**Tej Kandimalla**
 ## License
 
 MIT — see `LICENSE`.
