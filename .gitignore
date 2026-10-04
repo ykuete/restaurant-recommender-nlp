@@ -1,0 +1,11 @@
+# Yelp data — The license prohibits redistribution
+*.json
+*.parquet
+data/*
+!data/README.md
+
+# Python junk
+__pycache__/
+*.pyc
+venv/
+.ipynb_checkpoints/
