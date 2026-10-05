@@ -17,4 +17,4 @@ Yelp Open Dataset
 1. Download Yelp Open Dataset into this folder (`data`).
 2. It's possible to only keep JSON business and JSON review
 3. Run the `generate_data.py` script.
-
+*Note: We might need to fix the path of the `generating_data.py` for it to work
