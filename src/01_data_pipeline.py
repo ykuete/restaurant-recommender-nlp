@@ -9,11 +9,7 @@ args = parser.parse_args()
 print(f"Loading businesses...")
 
 # Load and filter business data
-<<<<<<< HEAD:src/generate_data.py
-business_df = pd.read_json('../data/yelp_academic_dataset_business.json', lines=True)
-=======
-business_df = pd.read_json('../data/yelp_dataset/yelp_academic_dataset_business.json', lines=True)
->>>>>>> 041f4daab33d672975d2c828ceda0dbdec20fc47:src/01_data_pipeline.py
+business_df = pd.read_json('data/yelp_academic_dataset_business.json', lines=True)
 
 # Filter for Restaurants
 restaurant = business_df[business_df['categories'].str.contains('Restaurant', na=False)]
@@ -27,11 +23,7 @@ rest_ids = set(restaurant['business_id'])
 
 chunk_size = 100000
 review_chunks = []
-<<<<<<< HEAD:src/generate_data.py
-for chunk in pd.read_json('../data/yelp_academic_dataset_review.json', lines=True, chunksize=chunk_size):
-=======
-for chunk in pd.read_json('../data/yelp_dataset/yelp_academic_dataset_review.json', lines=True, chunksize=chunk_size):
->>>>>>> 041f4daab33d672975d2c828ceda0dbdec20fc47:src/01_data_pipeline.py
+for chunk in pd.read_json('data/yelp_academic_dataset_review.json', lines=True, chunksize=chunk_size):
     # Keep only reviews for the restaurants in our target city
     filtered_chunk = chunk[chunk['business_id'].isin(rest_ids)]
     review_chunks.append(filtered_chunk)
