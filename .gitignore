@@ -1,11 +1,43 @@
-# Yelp data — The license prohibits redistribution
-*.json
-*.parquet
+# Yelp data: the licence prohibits redistribution
 data/*
 !data/README.md
+*.parquet
+# Only the raw Yelp dumps are ignored. A global *.json rule also hid the
+# model's config.json, modules.json and tokenizer files, and would hide
+# package.json and tsconfig.json in frontend/.
+yelp_academic_dataset_*.json
 
-# Python junk
+# Build outputs: parquet files, profiles, vector index, model weights
+artifacts/
+*.safetensors
+*.bin
+*.onnx
+*.faiss
+*.npy
+*.db
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Python
 __pycache__/
 *.pyc
 venv/
+.venv/
 .ipynb_checkpoints/
+.pytest_cache/
+.ruff_cache/
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+
+# OS and editor files
+.DS_Store
+.vscode/
+.idea/
