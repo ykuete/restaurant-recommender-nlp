@@ -57,9 +57,56 @@ def encode(model, texts: Sequence[str], batch_size: int = 64, progress: bool = F
     return np.asarray(vectors, dtype=np.float32)
 
 
-def load_encoder(path: str | Path | None = None) -> Encoder:
-    """Return a function texts -> vectors backed by the fine-tuned model."""
-    model = load_model(path)
+def onnx_dir(artifacts_dir: str | Path = config.ARTIFACTS_DIR) -> Path:
+    return Path(artifacts_dir) / config.ONNX_DIRNAME
+
+
+class OnnxEncoder:
+    """Query encoder that runs the ONNX export with onnxruntime.
+
+    Same output as the sentence-transformers model (mean pooling over the
+    tokens, then L2 normalization) but without PyTorch, so the API image
+    stays small enough for a 512 MB host. Export once with
+    scripts/06_export_onnx.py.
+    """
+
+    def __init__(self, path: str | Path):
+        import onnxruntime as ort
+        from tokenizers import Tokenizer
+
+        path = Path(path)
+        self.tokenizer = Tokenizer.from_file(str(path / "tokenizer.json"))
+        self.tokenizer.enable_truncation(max_length=config.MAX_SEQ_LENGTH)
+        self.tokenizer.enable_padding()
+        options = ort.SessionOptions()
+        options.intra_op_num_threads = 1  # small instances: avoid thread contention
+        self.session = ort.InferenceSession(
+            str(path / "model.onnx"), options, providers=["CPUExecutionProvider"]
+        )
+        self.input_names = {i.name for i in self.session.get_inputs()}
+
+    def __call__(self, texts: Sequence[str]) -> np.ndarray:
+        batch = self.tokenizer.encode_batch(list(texts))
+        mask = np.array([e.attention_mask for e in batch], dtype=np.int64)
+        feeds = {
+            "input_ids": np.array([e.ids for e in batch], dtype=np.int64),
+            "attention_mask": mask,
+            "token_type_ids": np.array([e.type_ids for e in batch], dtype=np.int64),
+        }
+        feeds = {k: v for k, v in feeds.items() if k in self.input_names}
+        hidden = self.session.run(None, feeds)[0]  # (n, tokens, dim)
+        weights = mask[:, :, None].astype(np.float32)
+        pooled = (hidden * weights).sum(axis=1) / np.clip(weights.sum(axis=1), 1e-9, None)
+        return normalize(pooled)
+
+
+def load_encoder(artifacts_dir: str | Path = config.ARTIFACTS_DIR) -> Encoder:
+    """A texts -> vectors function: the ONNX export when present (API),
+    otherwise the sentence-transformers model (offline scripts)."""
+    exported = onnx_dir(artifacts_dir)
+    if (exported / "model.onnx").exists():
+        return OnnxEncoder(exported)
+    model = load_model(model_dir(artifacts_dir))
     return lambda texts: encode(model, texts)
 
 

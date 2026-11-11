@@ -39,6 +39,9 @@ INDEX_IDS_FILE = "restaurant_ids.npy"
 REVIEW_SNIPPETS_FILE = "review_snippets.parquet"
 REVIEW_SNIPPET_VECTORS_FILE = "review_snippet_vectors.npy"
 MODEL_DIRNAME = "restaurant-model"
+# ONNX export of the model, used by the API (no PyTorch needed)
+ONNX_DIRNAME = "onnx"
+MAX_SEQ_LENGTH = 256
 
 # --- Data cleaning (rules from notebooks/02_EDA.ipynb) ------------------------
 MIN_CHARS = int(_env("MIN_CHARS", "20"))

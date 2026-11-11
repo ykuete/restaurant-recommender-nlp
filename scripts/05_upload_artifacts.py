@@ -28,6 +28,7 @@ API_FILES = [
     config.REVIEW_SNIPPETS_FILE,
     config.REVIEW_SNIPPET_VECTORS_FILE,
     f"{config.MODEL_DIRNAME}/**",
+    f"{config.ONNX_DIRNAME}/**",
 ]
 
 

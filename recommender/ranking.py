@@ -163,7 +163,7 @@ class Engine:
             aspect_snippets=pd.read_parquet(a / config.ASPECT_SNIPPETS_FILE),
             restaurant_ids=ids,
             restaurant_matrix=index.reconstruct_n(0, index.ntotal),
-            encoder=encoder or embeddings.load_encoder(embeddings.model_dir(a)),
+            encoder=encoder or embeddings.load_encoder(a),
             review_snippets=pd.read_parquet(snippets_path) if has_snippets else None,
             review_snippet_vectors=(
                 np.load(a / config.REVIEW_SNIPPET_VECTORS_FILE).astype(np.float32)
