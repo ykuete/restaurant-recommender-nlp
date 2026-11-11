@@ -1,76 +1,57 @@
-# Restaurant Recommender App — NLP Text Analysis
+# TasteLens — Restaurant Recommender (NLP Text Analysis)
 
-A restaurant recommendation system that uses Natural Language Processing to analyze customer reviews and match users to restaurants based on the *content* of what people say, not just star ratings.
+A restaurant recommender that reads what reviewers actually say. Star ratings hide nuance: a 4-star review can praise the food and complain about slow service. TasteLens scores each restaurant on food, service, ambience, price, noise and wait time from review text, then matches those scores to a plain-language request such as *"quiet date-night spot with great pasta"*.
 
-**Course:** NLP / Generative AI
-**Type:** Group Project
+**Course:** NLP / Generative AI · **Type:** group project
 
-## Project Idea
+## How it works
 
-Star ratings hide a lot of nuance — a 4-star review might rave about the food but complain about slow service. This project mines the text of restaurant reviews to build a recommender that understands *why* people liked or disliked a place, and matches that to what a user is actually looking for (e.g. "quiet date-night spot with great pasta" vs. "fast, cheap lunch").
+1. **Review ingestion**: Yelp Open Dataset restaurants and reviews → parquet.
+2. **Preprocessing**: cleaning (duplicates, very short and pre-2015 reviews, restaurants with fewer than 15 reviews), sentence splitting.
+3. **Aspect extraction + sentiment**: each sentence is tagged with aspects and scored positive or negative.
+4. **Semantic search**: a sentence-transformer fine-tuned on restaurant reviews embeds reviews and queries.
+5. **Recommendation**: restaurants ranked by semantic match, aspect fit and weighted star rating.
+6. **Generative summary**: an LLM explains each pick in two sentences.
 
-## Core Features
+## Project layout
 
-- **Review ingestion** — load a restaurant review dataset (e.g. Yelp Open Dataset, Google local reviews, or scraped data)
-- **Text preprocessing** — cleaning, tokenization, stopword removal, lemmatization
-- **Aspect extraction** — pull out what reviews actually discuss (food, service, ambiance, price, wait time)
-- **Sentiment analysis** — per-aspect sentiment scoring (not just overall polarity)
-- **Semantic search / embeddings** — embed reviews and user queries (e.g. OpenAI/Sentence-Transformers embeddings) to match natural-language requests to restaurants
-- **Recommendation engine** — rank restaurants by relevance + aspect sentiment fit to the query
-- **(Optional) Generative summary** — use an LLM to generate a natural-language summary of why a restaurant was recommended
-
-## Tech Stack (proposed — adjust as your team decides)
-
-| Layer | Tool |
-|---|---|
-| Language | Python 3.11+ |
-| NLP | spaCy, NLTK, Hugging Face Transformers |
-| Embeddings | sentence-transformers |
-| Generative layer | OpenAI API / Anthropic API |
-| App/UI | Streamlit |
-| Data | Pandas, Yelp Open Dataset (or similar) |
-
-## Project Structure
-
-```
-restaurant-recommender-nlp/
-├── README.md
-├── requirements.txt
-├── .gitignore
-├── LICENSE
-├── src/
-│   ├── __init__.py
-│   ├── preprocessing.py      # text cleaning, tokenization
-│   ├── sentiment.py          # aspect-based sentiment analysis
-│   ├── embeddings.py         # embedding generation + similarity search
-│   ├── recommender.py        # ranking / recommendation logic
-│   └── app.py                # Streamlit app entry point
-├── notebooks/
-│   └── 01_exploration.ipynb  # EDA on the review dataset
-├── data/
-│   └── README.md             # data source notes (raw data not committed)
-├── tests/
-│   └── test_preprocessing.py
-└── docs/
-    └── proposal.md           # project proposal / write-up
+```text
+recommender/   NLP package: pipeline, preprocessing, sentiment, embeddings, ranking
+scripts/       offline jobs that build the artifacts, run in order 01 → 05
+api/           FastAPI backend
+frontend/      Next.js website
+notebooks/     experiments: EDA, baseline, sentiment, fine-tuning
+artifacts/     git-ignored build outputs (parquet, profiles, index, model)
+data/          raw Yelp JSON goes here (git-ignored, see data/README.md)
+tests/         pytest suite
+docs/          proposal, requirements, evaluation
 ```
 
-## Getting Started
+## Setup
+
+Requires Python 3.11.
 
 ```bash
 git clone https://github.com/<your-org-or-username>/restaurant-recommender-nlp.git
 cd restaurant-recommender-nlp
-python -m venv venv
-source venv/bin/activate   # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-streamlit run src/app.py
+python3.11 -m venv .venv
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
+pip install -r requirements.txt -r requirements-dev.txt
+cp .env.example .env               # then fill in the values you need
 ```
+
+Check the install: `python -c "import recommender"` should print nothing and exit without an error.
+
+## Data
+
+The Yelp licence forbids redistributing the dataset, so no data is committed. Download the Yelp Open Dataset and follow [data/README.md](data/README.md). The data pipeline lives in `recommender/pipeline.py`.
 
 ## Team
 
-#**Yannick Kuete**
-#**Luc Dinh**
-#**Tej Kandimalla**
+- Yannick Kuete
+- Luc Dinh
+- Tej Kandimalla
+
 ## License
 
 MIT — see `LICENSE`.
