@@ -1,0 +1,398 @@
+{
+  "query": "quiet date-night spot with great pasta",
+  "query_aspects": [
+    "food",
+    "ambience",
+    "noise"
+  ],
+  "results": [
+    {
+      "business_id": "mock-lume",
+      "name": "Trattoria Lume",
+      "city": "Philadelphia",
+      "state": "PA",
+      "categories": [
+        "Italian",
+        "Restaurants"
+      ],
+      "price": 3,
+      "stars": 4.5,
+      "review_count": 612,
+      "aspects": [
+        {
+          "key": "food",
+          "label": "Food",
+          "positive": 93,
+          "negative": 4,
+          "mentions": 1284
+        },
+        {
+          "key": "ambience",
+          "label": "Ambience",
+          "positive": 91,
+          "negative": 5,
+          "mentions": 702
+        },
+        {
+          "key": "service",
+          "label": "Service",
+          "positive": 88,
+          "negative": 7,
+          "mentions": 655
+        },
+        {
+          "key": "price",
+          "label": "Price",
+          "positive": 62,
+          "negative": 30,
+          "mentions": 410
+        },
+        {
+          "key": "noise",
+          "label": "Quiet (noise)",
+          "positive": 84,
+          "negative": 10,
+          "mentions": 318
+        },
+        {
+          "key": "wait_time",
+          "label": "Wait time",
+          "positive": 77,
+          "negative": 15,
+          "mentions": 201
+        }
+      ],
+      "match": 94,
+      "scores": {
+        "semantic": 0.97,
+        "aspect_fit": 0.89,
+        "rating": 0.92
+      },
+      "query_aspects": [
+        "food",
+        "ambience",
+        "noise"
+      ],
+      "snippet": {
+        "text": "Quiet enough to actually hear each other, and the cacio e pepe was the best pasta of my year.",
+        "stars": 5,
+        "aspect": null
+      },
+      "summary": "Reviewers keep praising the handmade pasta and a candle-lit room quiet enough to talk, which fits a date night. The most common complaint is price."
+    },
+    {
+      "business_id": "mock-verde",
+      "name": "Osteria Verde",
+      "city": "Philadelphia",
+      "state": "PA",
+      "categories": [
+        "Italian",
+        "Wine Bars",
+        "Restaurants"
+      ],
+      "price": 2,
+      "stars": 4.0,
+      "review_count": 389,
+      "aspects": [
+        {
+          "key": "food",
+          "label": "Food",
+          "positive": 90,
+          "negative": 6,
+          "mentions": 840
+        },
+        {
+          "key": "ambience",
+          "label": "Ambience",
+          "positive": 86,
+          "negative": 8,
+          "mentions": 402
+        },
+        {
+          "key": "service",
+          "label": "Service",
+          "positive": 72,
+          "negative": 22,
+          "mentions": 377
+        },
+        {
+          "key": "price",
+          "label": "Price",
+          "positive": 81,
+          "negative": 12,
+          "mentions": 250
+        },
+        {
+          "key": "noise",
+          "label": "Quiet (noise)",
+          "positive": 70,
+          "negative": 22,
+          "mentions": 140
+        }
+      ],
+      "match": 89,
+      "scores": {
+        "semantic": 0.93,
+        "aspect_fit": 0.82,
+        "rating": 0.74
+      },
+      "query_aspects": [
+        "food",
+        "ambience",
+        "noise"
+      ],
+      "snippet": {
+        "text": "Ask for the back room. Romantic, dim, and the pappardelle is perfect.",
+        "stars": 5,
+        "aspect": null
+      },
+      "summary": "Fresh pasta and a calm, cozy back room come up in most reviews. Several reviewers mention slow service on weekends."
+    },
+    {
+      "business_id": "mock-forno",
+      "name": "Piccolo Forno",
+      "city": "Philadelphia",
+      "state": "PA",
+      "categories": [
+        "Italian",
+        "Pizza",
+        "Restaurants"
+      ],
+      "price": 2,
+      "stars": 4.5,
+      "review_count": 1024,
+      "aspects": [
+        {
+          "key": "food",
+          "label": "Food",
+          "positive": 95,
+          "negative": 3,
+          "mentions": 2210
+        },
+        {
+          "key": "service",
+          "label": "Service",
+          "positive": 80,
+          "negative": 14,
+          "mentions": 890
+        },
+        {
+          "key": "price",
+          "label": "Price",
+          "positive": 88,
+          "negative": 8,
+          "mentions": 700
+        },
+        {
+          "key": "ambience",
+          "label": "Ambience",
+          "positive": 64,
+          "negative": 26,
+          "mentions": 510
+        },
+        {
+          "key": "noise",
+          "label": "Quiet (noise)",
+          "positive": 41,
+          "negative": 52,
+          "mentions": 380
+        }
+      ],
+      "match": 81,
+      "scores": {
+        "semantic": 0.95,
+        "aspect_fit": 0.67,
+        "rating": 0.96
+      },
+      "query_aspects": [
+        "food",
+        "ambience",
+        "noise"
+      ],
+      "snippet": {
+        "text": "Incredible gnocchi, but we had to shout across the table on a Friday.",
+        "stars": 4,
+        "aspect": null
+      },
+      "summary": "The pasta is among the best-reviewed in the city, but many reviews call the room loud and crowded on weekends, so it ranks lower for a quiet date."
+    },
+    {
+      "business_id": "mock-rita",
+      "name": "Nonna Rita's Kitchen",
+      "city": "Philadelphia",
+      "state": "PA",
+      "categories": [
+        "Italian",
+        "Restaurants"
+      ],
+      "price": 2,
+      "stars": 4.0,
+      "review_count": 276,
+      "aspects": [
+        {
+          "key": "food",
+          "label": "Food",
+          "positive": 89,
+          "negative": 7,
+          "mentions": 520
+        },
+        {
+          "key": "service",
+          "label": "Service",
+          "positive": 91,
+          "negative": 5,
+          "mentions": 330
+        },
+        {
+          "key": "price",
+          "label": "Price",
+          "positive": 86,
+          "negative": 9,
+          "mentions": 190
+        },
+        {
+          "key": "noise",
+          "label": "Quiet (noise)",
+          "positive": 75,
+          "negative": 18,
+          "mentions": 120
+        },
+        {
+          "key": "ambience",
+          "label": "Ambience",
+          "positive": 69,
+          "negative": 20,
+          "mentions": 110
+        }
+      ],
+      "match": 77,
+      "scores": {
+        "semantic": 0.84,
+        "aspect_fit": 0.78,
+        "rating": 0.61
+      },
+      "query_aspects": [
+        "food",
+        "ambience",
+        "noise"
+      ],
+      "snippet": {
+        "text": "Felt like dinner at my grandmother's. Calm on a Tuesday, great red sauce.",
+        "stars": 4,
+        "aspect": null
+      },
+      "summary": "Reviewers love the homestyle red sauce and friendly staff and call it relaxed on weeknights. It reads as more casual than romantic."
+    }
+  ],
+  "baseline": [
+    {
+      "business_id": "mock-forno",
+      "name": "Piccolo Forno",
+      "city": "Philadelphia",
+      "state": "PA",
+      "categories": [
+        "Italian",
+        "Pizza",
+        "Restaurants"
+      ],
+      "price": 2,
+      "stars": 4.5,
+      "review_count": 1024,
+      "aspects": [
+        {
+          "key": "food",
+          "label": "Food",
+          "positive": 95,
+          "negative": 3,
+          "mentions": 2210
+        },
+        {
+          "key": "service",
+          "label": "Service",
+          "positive": 80,
+          "negative": 14,
+          "mentions": 890
+        },
+        {
+          "key": "price",
+          "label": "Price",
+          "positive": 88,
+          "negative": 8,
+          "mentions": 700
+        },
+        {
+          "key": "ambience",
+          "label": "Ambience",
+          "positive": 64,
+          "negative": 26,
+          "mentions": 510
+        },
+        {
+          "key": "noise",
+          "label": "Quiet (noise)",
+          "positive": 41,
+          "negative": 52,
+          "mentions": 380
+        }
+      ]
+    },
+    {
+      "business_id": "mock-steaks",
+      "name": "Broad Street Steaks",
+      "city": "Philadelphia",
+      "state": "PA",
+      "categories": [
+        "Cheesesteaks",
+        "Sandwiches"
+      ],
+      "price": 1,
+      "stars": 4.5,
+      "review_count": 2410,
+      "aspects": [
+        {
+          "key": "food",
+          "label": "Food",
+          "positive": 92,
+          "negative": 5,
+          "mentions": 3000
+        },
+        {
+          "key": "wait_time",
+          "label": "Wait time",
+          "positive": 58,
+          "negative": 35,
+          "mentions": 900
+        }
+      ]
+    },
+    {
+      "business_id": "mock-lark",
+      "name": "Morning Lark Cafe",
+      "city": "Philadelphia",
+      "state": "PA",
+      "categories": [
+        "Breakfast & Brunch",
+        "Cafes"
+      ],
+      "price": 2,
+      "stars": 4.5,
+      "review_count": 1890,
+      "aspects": [
+        {
+          "key": "food",
+          "label": "Food",
+          "positive": 90,
+          "negative": 6,
+          "mentions": 1500
+        },
+        {
+          "key": "wait_time",
+          "label": "Wait time",
+          "positive": 55,
+          "negative": 38,
+          "mentions": 700
+        }
+      ]
+    }
+  ]
+}
