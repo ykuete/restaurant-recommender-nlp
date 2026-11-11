@@ -1,26 +1,45 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* Design tokens from the clickable prototype (TasteLens canvas).
+   Use them as Tailwind classes: bg-ink, text-accent, border-line, font-display ... */
+@theme {
+  --color-ink: #15171a;
+  --color-ink-soft: #23262b;
+  --color-muted: #4a4f57;
+  --color-subtle: #3d4148;
+  --color-line: #e6e4df;
+  --color-field: #c9c6bf;
+  --color-surface: #f6f5f2;
+  --color-surface-strong: #eeece7;
+  --color-accent: #b93815;
+  --color-accent-dark: #8f2b10;
+  --color-accent-light: #f08a63;
+  --color-positive: #1e6b52;
+  --color-positive-dark: #12503c;
+  --color-positive-soft: #e7f3ee;
+  --color-negative-soft: #f2d4c2;
+  --color-negative-text: #8f2b10;
+  --color-focus: #1d4ed8;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: "Inter Variable", system-ui, sans-serif;
+  --font-display: "Space Grotesk Variable", "Inter Variable", system-ui, sans-serif;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+/* One visible focus style everywhere (keyboard users). */
+:where(a, button, input, select, textarea, summary):focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
