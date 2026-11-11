@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import FeedbackButtons from "@/components/FeedbackButtons";
 import RestaurantCard from "@/components/RestaurantCard";
 import SearchBar from "@/components/SearchBar";
 import { recommend } from "@/lib/api";
@@ -150,7 +151,9 @@ export default function ResultsView() {
           {!loading && !state.error && (
             <ol className="flex flex-col gap-4.5">
               {results.map((r, i) => (
-                <RestaurantCard key={r.business_id} result={r} rank={i + 1} query={req.query} />
+                <RestaurantCard key={r.business_id} result={r} rank={i + 1} query={req.query}>
+                  <FeedbackButtons businessId={r.business_id} query={req.query} />
+                </RestaurantCard>
               ))}
             </ol>
           )}
