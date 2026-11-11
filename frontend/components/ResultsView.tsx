@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import FeedbackButtons from "@/components/FeedbackButtons";
 import RestaurantCard from "@/components/RestaurantCard";
 import SearchBar from "@/components/SearchBar";
+import { EmptyState, ErrorState, ResultsSkeleton } from "@/components/States";
 import { recommend } from "@/lib/api";
 import { aspectLabel } from "@/lib/aspects";
 import { fromSearchParams, priceLabel } from "@/lib/format";
@@ -25,8 +26,10 @@ const sortKey: Record<Sort, (r: RestaurantResult) => number> = {
 
 export default function ResultsView() {
   const params = useSearchParams();
-  const key = params.toString();
-  const req = useMemo(() => fromSearchParams(new URLSearchParams(key)), [key]);
+  const search = params.toString();
+  const req = useMemo(() => fromSearchParams(new URLSearchParams(search)), [search]);
+  const [attempt, setAttempt] = useState(0);
+  const key = `${search}#${attempt}`;
 
   const [state, setState] = useState<{ key: string; data?: RecommendResponse; error?: string }>({
     key: "",
@@ -125,9 +128,13 @@ export default function ResultsView() {
           <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
             <div>
               <h1 id="res-h" className="font-display text-3xl font-bold tracking-tight">
-                {loading ? "Searching…" : `${results.length} matches`}
+                {loading
+                  ? "Searching…"
+                  : `${results.length} ${results.length === 1 ? "match" : "matches"}`}
               </h1>
-              <p className="text-muted">for “{req.query}”</p>
+              <p className="text-muted" aria-live="polite">
+                for “{req.query}”
+              </p>
             </div>
             <div role="group" aria-label="Sort results" className="flex gap-1 rounded-full bg-surface-strong p-1">
               {SORTS.map((s) => (
@@ -146,9 +153,14 @@ export default function ResultsView() {
             </div>
           </div>
 
-          {loading && <p className="text-muted">Loading results…</p>}
-          {!loading && state.error && <p role="alert">{state.error}</p>}
-          {!loading && !state.error && (
+          {loading && <ResultsSkeleton />}
+          {!loading && state.error && (
+            <ErrorState message={state.error} onRetry={() => setAttempt(attempt + 1)} />
+          )}
+          {!loading && !state.error && results.length === 0 && (
+            <EmptyState hasFilters={filters.length > 0} />
+          )}
+          {!loading && !state.error && results.length > 0 && (
             <ol className="flex flex-col gap-4.5">
               {results.map((r, i) => (
                 <RestaurantCard key={r.business_id} result={r} rank={i + 1} query={req.query}>
