@@ -10,8 +10,9 @@ import type {
 
 const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000").replace(/\/$/, "");
 
-// Mock data until the API is running. Set NEXT_PUBLIC_USE_MOCKS=false to call the API.
-export const USE_MOCKS = process.env.NEXT_PUBLIC_USE_MOCKS !== "false";
+// Calls the real API. Set NEXT_PUBLIC_USE_MOCKS=true to work on the UI
+// with the sample responses in mocks/ when no API is running.
+export const USE_MOCKS = process.env.NEXT_PUBLIC_USE_MOCKS === "true";
 
 export class ApiError extends Error {
   constructor(

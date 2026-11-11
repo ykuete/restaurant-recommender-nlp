@@ -8,4 +8,5 @@ made up for the prototype.
 - `recommend.json`: `POST /api/recommend` for "quiet date-night spot with great pasta"
 - `restaurant.json`: `GET /api/restaurants/mock-lume`
 
-Used when `NEXT_PUBLIC_USE_MOCKS=true` (see `lib/api.ts`).
+Used only when `NEXT_PUBLIC_USE_MOCKS=true` (see `lib/api.ts`); by default
+the frontend calls the API at `NEXT_PUBLIC_API_URL`.

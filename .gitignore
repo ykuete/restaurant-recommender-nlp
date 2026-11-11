@@ -1,43 +1,42 @@
-# Yelp data: the licence prohibits redistribution
-data/*
-!data/README.md
-*.parquet
-# Only the raw Yelp dumps are ignored. A global *.json rule also hid the
-# model's config.json, modules.json and tokenizer files, and would hide
-# package.json and tsconfig.json in frontend/.
-yelp_academic_dataset_*.json
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# Build outputs: parquet files, profiles, vector index, model weights
-artifacts/
-*.safetensors
-*.bin
-*.onnx
-*.faiss
-*.npy
-*.db
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
 
-# Secrets
-.env
-.env.*
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
 !.env.example
 
-# Python
-__pycache__/
-*.pyc
-venv/
-.venv/
-.ipynb_checkpoints/
-.pytest_cache/
-.ruff_cache/
+# vercel
+.vercel
 
-# Node / Next.js
-node_modules/
-.next/
-out/
+# typescript
 *.tsbuildinfo
 next-env.d.ts
-
-# OS and editor files
-.DS_Store
-.vscode/
-.idea/
