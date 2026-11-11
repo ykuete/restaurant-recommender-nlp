@@ -9,3 +9,8 @@ __pycache__/
 *.pyc
 venv/
 .ipynb_checkpoints/
+.venv/
+
+src/restaurant-model-checkpoints/
+src/restaurant-model-finetuned/
+src/Yelp-JSON.zip
