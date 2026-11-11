@@ -13,7 +13,9 @@ from recommender import config
 from recommender.sentiment import ASPECT_LABELS, tag_aspects
 
 
-def weighted_rating(restaurants: pd.DataFrame, quantile: float = config.BASELINE_QUANTILE) -> pd.Series:
+def weighted_rating(
+    restaurants: pd.DataFrame, quantile: float = config.BASELINE_QUANTILE
+) -> pd.Series:
     """Bayesian weighted rating from notebooks/03_baseline_model.ipynb.
 
         WR = v / (v + m) * R + m / (v + m) * C
@@ -36,7 +38,9 @@ def popularity_baseline(
     quantile's review count (exactly the notebook's baseline)."""
     m = restaurants["review_count"].quantile(quantile)
     eligible = restaurants[restaurants["review_count"] >= m]
-    scored = eligible.assign(weight_score=weighted_rating(restaurants, quantile).loc[eligible.index])
+    scored = eligible.assign(
+        weight_score=weighted_rating(restaurants, quantile).loc[eligible.index]
+    )
     return scored.sort_values("weight_score", ascending=False).head(k)
 
 
@@ -250,7 +254,9 @@ class Engine:
             "aspects": self.aspect_list(business_id),
         }
 
-    def best_snippet(self, business_id: str, query_vec: np.ndarray, aspects: list[str]) -> dict | None:
+    def best_snippet(
+        self, business_id: str, query_vec: np.ndarray, aspects: list[str]
+    ) -> dict | None:
         """The stored review closest to the query, else a positive aspect snippet."""
         rows = self._snippet_rows.get(business_id)
         if rows is not None and self.review_snippet_vectors is not None:

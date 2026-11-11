@@ -106,7 +106,9 @@ def main() -> None:
             "| --- | --- | --- |",
         ]
         for k in (1, 5, 10):
-            lines.append(f"| Recall@{k} | {recall[f'recall@{k}']:.1%} | {recall[f'random@{k}']:.2%} |")
+            lines.append(
+                f"| Recall@{k} | {recall[f'recall@{k}']:.1%} | {recall[f'random@{k}']:.2%} |"
+            )
     else:
         lines.append("Not enough reviews per restaurant to hold one out.")
 
@@ -122,8 +124,12 @@ def main() -> None:
     baseline = [r["name"] for r in engine.baseline(filters, k=5)]
     for query in TEST_QUERIES:
         hybrid = [r["name"] for r in engine.rank(query, filters, k=5)]
-        lines += [f"### {query}", "", "| # | Hybrid | Relevant? | Baseline | Relevant? |",
-                  "| --- | --- | --- | --- | --- |"]
+        lines += [
+            f"### {query}",
+            "",
+            "| # | Hybrid | Relevant? | Baseline | Relevant? |",
+            "| --- | --- | --- | --- | --- |",
+        ]
         for i in range(5):
             h = hybrid[i] if i < len(hybrid) else ""
             b = baseline[i] if i < len(baseline) else ""

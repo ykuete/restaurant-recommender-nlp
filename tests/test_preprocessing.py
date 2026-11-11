@@ -13,7 +13,9 @@ def _many(business_id, n, text="A perfectly fine review of the food here", date=
 
 
 def test_drops_duplicate_texts():
-    rows = _many("a", 15) + [("dup", "a", "A perfectly fine review of the food here #0", "2020-01-01")]
+    rows = _many("a", 15) + [
+        ("dup", "a", "A perfectly fine review of the food here #0", "2020-01-01")
+    ]
     out = clean_reviews(_reviews(rows), min_reviews=1)
     assert len(out) == 15
 
@@ -38,13 +40,18 @@ def test_drops_restaurants_with_too_few_reviews():
 
 def test_min_reviews_counts_after_other_filters():
     # 15 reviews, but one is a duplicate: only 14 remain, so the restaurant goes.
-    rows = _many("a", 14) + [("dup", "a", "A perfectly fine review of the food here #0", "2020-01-01")]
+    rows = _many("a", 14) + [
+        ("dup", "a", "A perfectly fine review of the food here #0", "2020-01-01")
+    ]
     out = clean_reviews(_reviews(rows), min_reviews=15)
     assert out.empty
 
 
 def test_latest_reviews_keeps_most_recent():
-    rows = [(f"r{i}", "a", f"Review number {i} is long enough", f"2020-01-{i + 1:02d}") for i in range(5)]
+    rows = [
+        (f"r{i}", "a", f"Review number {i} is long enough", f"2020-01-{i + 1:02d}")
+        for i in range(5)
+    ]
     df = _reviews(rows).assign(date=lambda d: pd.to_datetime(d["date"]))
     out = latest_reviews(df, per_restaurant=2)
     assert set(out["review_id"]) == {"r4", "r3"}

@@ -19,7 +19,9 @@ MAX_RESULTS = 20
 
 class RecommendRequest(BaseModel):
     query: str = Field(
-        ..., min_length=2, max_length=MAX_QUERY_CHARS,
+        ...,
+        min_length=2,
+        max_length=MAX_QUERY_CHARS,
         examples=["quiet date-night spot with great pasta"],
     )
     city: str | None = Field(None, max_length=80, examples=["Philadelphia"])

@@ -60,12 +60,21 @@ def main() -> None:
     snippets.reset_index(drop=True).to_parquet(artifacts / config.REVIEW_SNIPPETS_FILE, index=False)
     np.save(artifacts / config.REVIEW_SNIPPET_VECTORS_FILE, snippet_vecs)
 
-    size_mb = sum(
-        (artifacts / f).stat().st_size
-        for f in (config.INDEX_FILE, config.REVIEW_SNIPPET_VECTORS_FILE, config.REVIEW_SNIPPETS_FILE)
-    ) / 1e6
-    print(f"Indexed {len(ids)} restaurants and {len(snippets)} snippets "
-          f"({size_mb:.0f} MB) in {time.time() - start:.0f} s")
+    size_mb = (
+        sum(
+            (artifacts / f).stat().st_size
+            for f in (
+                config.INDEX_FILE,
+                config.REVIEW_SNIPPET_VECTORS_FILE,
+                config.REVIEW_SNIPPETS_FILE,
+            )
+        )
+        / 1e6
+    )
+    print(
+        f"Indexed {len(ids)} restaurants and {len(snippets)} snippets "
+        f"({size_mb:.0f} MB) in {time.time() - start:.0f} s"
+    )
 
 
 if __name__ == "__main__":

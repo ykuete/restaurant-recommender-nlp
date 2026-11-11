@@ -40,7 +40,7 @@ def normalize_url(url: str) -> str:
     """Hosted Postgres URLs start with postgres:// or postgresql://; use psycopg 3."""
     for prefix in ("postgres://", "postgresql://"):
         if url.startswith(prefix):
-            return "postgresql+psycopg://" + url[len(prefix):]
+            return "postgresql+psycopg://" + url[len(prefix) :]
     return url
 
 

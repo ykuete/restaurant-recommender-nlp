@@ -69,7 +69,9 @@ def normalize(matrix: np.ndarray) -> np.ndarray:
     return (matrix / np.clip(norms, 1e-12, None)).astype(np.float32)
 
 
-def restaurant_vectors(business_ids: Sequence[str], vectors: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+def restaurant_vectors(
+    business_ids: Sequence[str], vectors: np.ndarray
+) -> tuple[np.ndarray, np.ndarray]:
     """One vector per restaurant: the normalized mean of its rows' vectors.
 
     Returns (ids, matrix) with ids sorted, matrix shape (n_restaurants, dim).

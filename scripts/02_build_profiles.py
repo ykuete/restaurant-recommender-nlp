@@ -48,8 +48,10 @@ def main() -> None:
 
     profiles.to_parquet(artifacts / config.PROFILES_FILE, index=False)
     snippets.to_parquet(artifacts / config.ASPECT_SNIPPETS_FILE, index=False)
-    print(f"Wrote {len(profiles)} profile rows and {len(snippets)} snippets "
-          f"in {time.time() - start:.0f} s")
+    print(
+        f"Wrote {len(profiles)} profile rows and {len(snippets)} snippets "
+        f"in {time.time() - start:.0f} s"
+    )
 
 
 if __name__ == "__main__":

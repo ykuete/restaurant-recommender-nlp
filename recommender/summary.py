@@ -39,7 +39,10 @@ def template_summary(result: dict) -> str:
     text = "Reviewers rate the " + " and ".join(parts) + " highly."
     weakest = max(aspects.values(), key=lambda a: a["negative"])
     if weakest["negative"] >= 25 and weakest not in strengths:
-        text += f" The most common complaint is {_label(weakest['key'])} ({weakest['negative']}% negative)."
+        text += (
+            f" The most common complaint is {_label(weakest['key'])}"
+            f" ({weakest['negative']}% negative)."
+        )
     return text
 
 
@@ -91,7 +94,9 @@ async def _call_llm(provider: str, prompt: str) -> str:
     return (resp.choices[0].message.content or "").strip()
 
 
-async def summarize(query: str, results: list[dict], timeout: float = config.LLM_TIMEOUT_S) -> list[str]:
+async def summarize(
+    query: str, results: list[dict], timeout: float = config.LLM_TIMEOUT_S
+) -> list[str]:
     """One summary per result. LLM calls run in parallel within `timeout`
     seconds in total; any that fail or are late get the template."""
     fallback = [template_summary(r) for r in results]

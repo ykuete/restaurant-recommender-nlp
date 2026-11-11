@@ -30,6 +30,7 @@ ASPECT_LABELS = {
 
 # Keywords per aspect. Multi-word phrases are allowed. Matching is
 # case-insensitive on word boundaries, with an optional plural "s".
+# fmt: off
 ASPECT_KEYWORDS: dict[str, list[str]] = {
     "food": [
         "food", "dish", "meal", "menu", "taste", "tasty", "delicious", "flavor",
@@ -68,6 +69,7 @@ ASPECT_KEYWORDS: dict[str, list[str]] = {
         "dairy-free", "allergy", "allergies", "plant-based", "keto",
     ],
 }
+# fmt: on
 
 
 @lru_cache(maxsize=1)
@@ -139,8 +141,7 @@ def score_sentences(sentences: Iterable[str], scorer: Scorer) -> list[dict]:
     pairs = [(s, a) for s in sentences for a in tag_aspects(s)]
     scores = scorer.score_many(pairs)
     return [
-        {"sentence": s, "aspect": a, "score": sc}
-        for (s, a), sc in zip(pairs, scores, strict=True)
+        {"sentence": s, "aspect": a, "score": sc} for (s, a), sc in zip(pairs, scores, strict=True)
     ]
 
 
@@ -176,8 +177,14 @@ def build_profiles(
     mentions = pd.DataFrame(rows, columns=["business_id", "stars", "date", "sentence", "aspect"])
     if mentions.empty:
         empty_profiles = pd.DataFrame(
-            columns=["business_id", "aspect", "mentions", "positive_share",
-                     "negative_share", "mean_score"]
+            columns=[
+                "business_id",
+                "aspect",
+                "mentions",
+                "positive_share",
+                "negative_share",
+                "mean_score",
+            ]
         )
         return empty_profiles, mentions.assign(score=pd.Series(dtype=float))
 

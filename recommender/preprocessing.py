@@ -78,8 +78,4 @@ def split_sentences(text: str) -> list[str]:
 def lemmas(text: str, remove_stopwords: bool = True) -> list[str]:
     """Lower-cased lemmas of the alphabetic tokens, without stopwords."""
     doc = _lemmatizer()(normalize_text(text))
-    return [
-        t.lemma_.lower()
-        for t in doc
-        if t.is_alpha and not (remove_stopwords and t.is_stop)
-    ]
+    return [t.lemma_.lower() for t in doc if t.is_alpha and not (remove_stopwords and t.is_stop)]

@@ -3,7 +3,13 @@ import json
 import pandas as pd
 import pytest
 
-from recommender.ranking import Filters, parse_query, popularity_baseline, price_level, weighted_rating
+from recommender.ranking import (
+    Filters,
+    parse_query,
+    popularity_baseline,
+    price_level,
+    weighted_rating,
+)
 
 
 def _restaurants():
@@ -20,7 +26,10 @@ def test_weighted_rating_matches_notebook_formula():
     df = _restaurants()
     c = df["stars"].mean()  # 4.0
     m = df["review_count"].quantile(0.9)
-    expected = [(v / (v + m)) * r + (m / (v + m)) * c for r, v in zip(df["stars"], df["review_count"])]
+    expected = [
+        (v / (v + m)) * r + (m / (v + m)) * c
+        for r, v in zip(df["stars"], df["review_count"], strict=False)
+    ]
     assert weighted_rating(df).tolist() == pytest.approx(expected)
 
 

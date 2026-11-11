@@ -19,7 +19,9 @@ from recommender.pipeline import build_dataset  # noqa: E402
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--data-dir", default=str(config.DATA_DIR), help="folder with the Yelp JSON")
+    parser.add_argument(
+        "--data-dir", default=str(config.DATA_DIR), help="folder with the Yelp JSON"
+    )
     parser.add_argument("--out", default=str(config.ARTIFACTS_DIR), help="output folder")
     parser.add_argument("--city", default=None, help="keep one city only (e.g. Philadelphia)")
     args = parser.parse_args()
