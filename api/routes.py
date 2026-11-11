@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from fastapi import APIRouter, HTTPException, Request, status
+from starlette.concurrency import run_in_threadpool
 
 from api.schemas import (
     FeedbackIn,
@@ -12,6 +13,7 @@ from api.schemas import (
     RestaurantDetail,
 )
 from recommender.ranking import Engine, Filters, parse_query
+from recommender.summary import summarize
 
 router = APIRouter()
 
@@ -25,13 +27,14 @@ def to_filters(req: RecommendRequest) -> Filters:
 
 
 @router.post("/recommend", response_model=RecommendResponse)
-def recommend(req: RecommendRequest, request: Request) -> RecommendResponse:
-    """Ranked restaurants for a plain-language request."""
+async def recommend(req: RecommendRequest, request: Request) -> RecommendResponse:
+    """Ranked restaurants for a plain-language request, each with a summary."""
     engine = get_engine(request)
     filters = to_filters(req)
-    results = engine.rank(req.query, filters, k=req.k)
-    for r in results:
-        r["summary"] = f"Matches {r['match']}% of your request."
+    # Ranking is CPU work: run it in a thread so the server stays responsive.
+    results = await run_in_threadpool(engine.rank, req.query, filters, req.k)
+    for result, summary in zip(results, await summarize(req.query, results), strict=True):
+        result["summary"] = summary
     return RecommendResponse(
         query=req.query,
         query_aspects=parse_query(req.query),
