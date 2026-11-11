@@ -13,6 +13,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from api.routes import router
 from recommender import config
 from recommender.ranking import Engine
 
@@ -42,6 +43,7 @@ def create_app(engine_factory: Callable[[], Engine] = default_engine) -> FastAPI
         allow_methods=["GET", "POST"],
         allow_headers=["*"],
     )
+    app.include_router(router, prefix="/api")
     return app
 
 
