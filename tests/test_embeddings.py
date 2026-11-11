@@ -80,3 +80,10 @@ def test_onnx_matches_pytorch_model():
     )
     onnx_vecs = embeddings.OnnxEncoder(embeddings.onnx_dir(ARTIFACTS))(sentences)
     assert np.min(np.sum(torch_vecs * onnx_vecs, axis=1)) > 0.999
+
+
+def test_ensure_artifacts_explains_what_is_missing(tmp_path):
+    from recommender.artifacts import ensure_artifacts
+
+    with pytest.raises(RuntimeError, match="HF_REPO_ID is not set"):
+        ensure_artifacts(tmp_path, repo_id="", token=None)

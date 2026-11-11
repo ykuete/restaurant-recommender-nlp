@@ -17,19 +17,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from recommender import config  # noqa: E402
-
-# Only what the API needs. The raw reviews.parquet stays local.
-API_FILES = [
-    config.RESTAURANTS_FILE,
-    config.PROFILES_FILE,
-    config.ASPECT_SNIPPETS_FILE,
-    config.INDEX_FILE,
-    config.INDEX_IDS_FILE,
-    config.REVIEW_SNIPPETS_FILE,
-    config.REVIEW_SNIPPET_VECTORS_FILE,
-    f"{config.MODEL_DIRNAME}/**",
-    f"{config.ONNX_DIRNAME}/**",
-]
+from recommender.artifacts import UPLOAD_PATTERNS  # noqa: E402
 
 
 def main() -> None:
@@ -50,7 +38,7 @@ def main() -> None:
     api.upload_folder(
         repo_id=args.repo_id,
         folder_path=args.artifacts,
-        allow_patterns=API_FILES,
+        allow_patterns=UPLOAD_PATTERNS,
         commit_message="Update recommender artifacts",
     )
     print(f"Uploaded artifacts to https://huggingface.co/{args.repo_id} (private)")

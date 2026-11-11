@@ -19,11 +19,14 @@ from api import db
 from api.limits import limiter
 from api.routes import router
 from recommender import config
+from recommender.artifacts import ensure_artifacts
 from recommender.ranking import Engine
 
 
 def default_engine() -> Engine:
-    return Engine.load(config.ARTIFACTS_DIR)
+    # In production the container starts empty: fetch the model and data
+    # from the private Hub repo first (no-op when they are already there).
+    return Engine.load(ensure_artifacts(config.ARTIFACTS_DIR))
 
 
 def create_app(
