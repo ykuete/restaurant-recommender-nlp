@@ -45,7 +45,7 @@ def create_app(
 
     app = FastAPI(
         title="TasteLens API",
-        version="0.1.0",
+        version="1.0.0",
         description="Restaurant recommendations from review text.",
         lifespan=lifespan,
     )

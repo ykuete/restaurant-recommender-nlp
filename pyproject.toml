@@ -1,6 +1,6 @@
 [project]
 name = "tastelens"
-version = "0.1.0"
+version = "1.0.0"
 description = "Restaurant recommendations from review text (NLP Gen AI group project)"
 readme = "README.md"
 requires-python = ">=3.11"
