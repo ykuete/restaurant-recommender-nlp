@@ -5,6 +5,7 @@ from __future__ import annotations
 from fastapi import APIRouter, HTTPException, Request, status
 from starlette.concurrency import run_in_threadpool
 
+from api.db import save_feedback
 from api.schemas import (
     FeedbackIn,
     Health,
@@ -54,11 +55,8 @@ def restaurant(business_id: str, request: Request) -> RestaurantDetail:
 
 @router.post("/feedback", status_code=status.HTTP_201_CREATED)
 def feedback(item: FeedbackIn, request: Request) -> dict:
-    """Store a helpful / not helpful rating (in memory for now)."""
-    log = getattr(request.app.state, "feedback", None)
-    if log is None:
-        log = request.app.state.feedback = []
-    log.append(item.model_dump())
+    """Store a helpful / not helpful rating for evaluation."""
+    save_feedback(request.app.state.db, item.business_id, item.query, item.helpful)
     return {"saved": True}
 
 

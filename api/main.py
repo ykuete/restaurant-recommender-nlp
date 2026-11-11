@@ -13,6 +13,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from api import db
 from api.routes import router
 from recommender import config
 from recommender.ranking import Engine
@@ -22,14 +23,19 @@ def default_engine() -> Engine:
     return Engine.load(config.ARTIFACTS_DIR)
 
 
-def create_app(engine_factory: Callable[[], Engine] = default_engine) -> FastAPI:
-    """Build the app. Tests pass a factory that returns a small fake engine."""
+def create_app(
+    engine_factory: Callable[[], Engine] = default_engine,
+    database_url: str = config.DATABASE_URL,
+) -> FastAPI:
+    """Build the app. Tests pass a fake engine factory and a temporary database."""
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
         # Load the model, index and profiles once, not on every request.
         app.state.engine = engine_factory()
+        app.state.db = db.connect(database_url)
         yield
+        app.state.db.dispose()
 
     app = FastAPI(
         title="TasteLens API",
