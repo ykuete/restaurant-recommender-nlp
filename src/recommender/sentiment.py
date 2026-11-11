@@ -1,13 +1,19 @@
 """Aspect extraction and aspect-based sentiment.
 
-Step 1 (this module's lexicon): tag each review sentence with the aspects it
-talks about, using keyword lists. Fast, transparent and easy to extend.
+1. tag_aspects(): tag each review sentence with the aspects it talks about,
+   using keyword lists. Fast, transparent and easy to extend.
+2. AspectSentimentScorer: score each (sentence, aspect) pair from -1
+   (negative) to +1 (positive) with a pretrained aspect-based sentiment model.
 """
 
 from __future__ import annotations
 
 import re
+from collections.abc import Iterable, Sequence
 from functools import lru_cache
+from typing import Protocol
+
+from recommender import config
 
 # Display names used by the API and the frontend.
 ASPECT_LABELS = {
@@ -74,3 +80,60 @@ def _patterns() -> dict[str, re.Pattern[str]]:
 def tag_aspects(sentence: str) -> list[str]:
     """Aspects a sentence mentions, in ASPECT_KEYWORDS order (may be empty)."""
     return [aspect for aspect, pattern in _patterns().items() if pattern.search(sentence)]
+
+
+# Words given to the aspect-based sentiment model as the "aspect" input.
+ASPECT_TERMS = {
+    "food": "food",
+    "service": "service",
+    "ambience": "ambience",
+    "price": "price",
+    "noise": "noise level",
+    "wait_time": "wait time",
+    "dietary": "dietary options",
+}
+
+
+class Scorer(Protocol):
+    def score_many(self, pairs: Sequence[tuple[str, str]]) -> list[float]: ...
+
+
+def _polarity(scores: list[dict]) -> float:
+    """Turn label probabilities into one number: P(positive) - P(negative)."""
+    probs = {d["label"].lower(): d["score"] for d in scores}
+    return float(probs.get("positive", 0.0) - probs.get("negative", 0.0))
+
+
+class AspectSentimentScorer:
+    """Aspect-based sentiment with a Hugging Face model.
+
+    The default model (config.ABSA_MODEL, yangheng/deberta-v3-base-absa-v1.1)
+    reads a sentence plus an aspect term and predicts Negative / Neutral /
+    Positive for that aspect, so "great pasta, rude waiter" scores food
+    positive and service negative.
+    """
+
+    def __init__(self, model_name: str = config.ABSA_MODEL, device: int = -1, batch_size: int = 32):
+        from transformers import pipeline  # heavy import, only when scoring
+
+        self.batch_size = batch_size
+        self._pipe = pipeline("text-classification", model=model_name, device=device, top_k=None)
+
+    def score_many(self, pairs: Sequence[tuple[str, str]]) -> list[float]:
+        """Score (sentence, aspect key) pairs. Returns one value in [-1, 1] each."""
+        if not pairs:
+            return []
+        inputs = [{"text": s, "text_pair": ASPECT_TERMS.get(a, a)} for s, a in pairs]
+        outputs = self._pipe(inputs, batch_size=self.batch_size, truncation=True)
+        return [_polarity(o) for o in outputs]
+
+
+def score_sentences(sentences: Iterable[str], scorer: Scorer) -> list[dict]:
+    """Tag every sentence and score each aspect it mentions.
+
+    Returns one dict per (sentence, aspect): {"sentence", "aspect", "score"}.
+    Sentences that mention no aspect are skipped.
+    """
+    pairs = [(s, a) for s in sentences for a in tag_aspects(s)]
+    scores = scorer.score_many(pairs)
+    return [{"sentence": s, "aspect": a, "score": sc} for (s, a), sc in zip(pairs, scores)]
