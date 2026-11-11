@@ -4,6 +4,8 @@ Reads reviews.parquet, applies the cleaning rules, scores the most recent
 reviews of each restaurant per aspect, and writes aspect_profiles.parquet
 and aspect_snippets.parquet.
 
+Needs the ML extras: pip install -r requirements-ml.txt
+
 Usage (from the repository root):
     python scripts/02_build_profiles.py                 # CPU
     python scripts/02_build_profiles.py --device 0      # first GPU (e.g. Colab)

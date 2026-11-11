@@ -1,0 +1,14 @@
+# Offline pipeline: fine-tuning, aspect sentiment, indexing, ONNX export.
+# Install on a laptop or Colab, not in the API image:
+#   pip install -r requirements-ml.txt
+-r requirements.txt
+
+# CPU-only PyTorch wheels (much smaller than the default CUDA build).
+# On a GPU machine (e.g. Colab) remove this line to get the CUDA build.
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.5.1
+transformers==4.46.3
+sentence-transformers==3.3.1
+optimum[onnxruntime]==1.23.3
+spacy==3.8.3
+nltk==3.9.1

@@ -6,6 +6,8 @@ on), averages them into one vector per restaurant and stores a FAISS index.
 It also keeps up to SNIPPETS_PER_RESTAURANT reviews per restaurant, with
 float16 vectors, to pick the review that best matches a query.
 
+Needs the ML extras: pip install -r requirements-ml.txt
+
 Usage (from the repository root):
     python scripts/03_build_index.py
 """

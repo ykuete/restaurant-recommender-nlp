@@ -40,6 +40,14 @@ pip install -r requirements.txt -r requirements-dev.txt
 cp .env.example .env               # then fill in the values you need
 ```
 
+Three requirement files:
+
+| File | For | Contains |
+| --- | --- | --- |
+| `requirements.txt` | the API (and its Docker image) | FastAPI, onnxruntime, FAISS, pandas, LLM clients |
+| `requirements-ml.txt` | the offline pipeline (`scripts/`, notebooks) | everything above + PyTorch, transformers, sentence-transformers, optimum, spaCy |
+| `requirements-dev.txt` | tests and linting | pytest, ruff, jupyter, onnx, spaCy |
+
 Check the install: `python -c "import recommender"` should print nothing and exit without an error.
 
 ## Data
