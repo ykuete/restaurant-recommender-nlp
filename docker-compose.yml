@@ -1,0 +1,37 @@
+# Run the whole app locally: API on :8000, website on :3000.
+#   cp .env.example .env      (fill in HF_REPO_ID/HF_TOKEN or build artifacts/ locally)
+#   docker compose up --build
+services:
+  api:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    env_file: .env
+    environment:
+      ARTIFACTS_DIR: /app/artifacts
+      ALLOWED_ORIGINS: http://localhost:3000
+      # Local feedback only; reset when the container is recreated.
+      DATABASE_URL: sqlite:////tmp/feedback.db
+    volumes:
+      # Reuse locally built artifacts; otherwise they are downloaded from the Hub.
+      - ./artifacts:/app/artifacts
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        # The browser calls the API through the port published above.
+        NEXT_PUBLIC_API_URL: http://localhost:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      api:
+        condition: service_healthy
