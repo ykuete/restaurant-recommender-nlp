@@ -13,6 +13,8 @@ from collections.abc import Iterable, Sequence
 from functools import lru_cache
 from typing import Protocol
 
+import pandas as pd
+
 from recommender import config
 
 # Display names used by the API and the frontend.
@@ -136,4 +138,74 @@ def score_sentences(sentences: Iterable[str], scorer: Scorer) -> list[dict]:
     """
     pairs = [(s, a) for s in sentences for a in tag_aspects(s)]
     scores = scorer.score_many(pairs)
-    return [{"sentence": s, "aspect": a, "score": sc} for (s, a), sc in zip(pairs, scores)]
+    return [
+        {"sentence": s, "aspect": a, "score": sc}
+        for (s, a), sc in zip(pairs, scores, strict=True)
+    ]
+
+
+# A sentence counts as positive / negative for an aspect beyond this margin.
+POLARITY_MARGIN = 0.25
+
+
+def build_profiles(
+    reviews: pd.DataFrame,
+    scorer: Scorer,
+    per_restaurant: int = config.REVIEWS_PER_RESTAURANT,
+    snippets_per_side: int = 2,
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Aggregate sentence-level aspect sentiment into per-restaurant profiles.
+
+    Uses the ``per_restaurant`` most recent reviews of each restaurant.
+
+    Returns:
+        profiles: one row per (business_id, aspect) with mentions,
+            positive_share, negative_share and mean_score.
+        snippets: the most positive and most negative sentences per
+            (business_id, aspect), with the review's stars and date, for the
+            detail page and the generated summary.
+    """
+    from recommender.preprocessing import latest_reviews, split_sentences
+
+    recent = latest_reviews(reviews, per_restaurant)
+    rows = []
+    for review in recent.itertuples(index=False):
+        for sentence in split_sentences(review.text):
+            for aspect in tag_aspects(sentence):
+                rows.append((review.business_id, review.stars, review.date, sentence, aspect))
+    mentions = pd.DataFrame(rows, columns=["business_id", "stars", "date", "sentence", "aspect"])
+    if mentions.empty:
+        empty_profiles = pd.DataFrame(
+            columns=["business_id", "aspect", "mentions", "positive_share",
+                     "negative_share", "mean_score"]
+        )
+        return empty_profiles, mentions.assign(score=pd.Series(dtype=float))
+
+    pairs = list(zip(mentions["sentence"], mentions["aspect"], strict=True))
+    mentions["score"] = scorer.score_many(pairs)
+    mentions["positive"] = mentions["score"] > POLARITY_MARGIN
+    mentions["negative"] = mentions["score"] < -POLARITY_MARGIN
+
+    profiles = (
+        mentions.groupby(["business_id", "aspect"])
+        .agg(
+            mentions=("score", "size"),
+            positive_share=("positive", "mean"),
+            negative_share=("negative", "mean"),
+            mean_score=("score", "mean"),
+        )
+        .reset_index()
+    )
+
+    # Short, readable sentences make the best snippets.
+    readable = mentions[mentions["sentence"].str.len().between(30, 300)]
+    ordered = readable.sort_values("score")
+    by_aspect = ordered.groupby(["business_id", "aspect"], group_keys=False)
+    snippets = pd.concat(
+        [
+            by_aspect.head(snippets_per_side).query("negative"),
+            by_aspect.tail(snippets_per_side).query("positive"),
+        ]
+    ).drop_duplicates(subset=["business_id", "aspect", "sentence"])
+    snippets = snippets[["business_id", "aspect", "sentence", "score", "stars", "date"]]
+    return profiles, snippets.reset_index(drop=True)
