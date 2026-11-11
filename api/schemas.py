@@ -6,20 +6,29 @@ Change both together.
 
 from __future__ import annotations
 
-from typing import Literal
+from typing import Annotated, Literal
 
 from pydantic import BaseModel, Field
 
 DietaryOption = Literal["vegetarian", "vegan", "gluten-free", "halal", "kosher"]
 
 
+MAX_QUERY_CHARS = 300
+MAX_RESULTS = 20
+
+
 class RecommendRequest(BaseModel):
-    query: str = Field(..., examples=["quiet date-night spot with great pasta"])
-    city: str | None = Field(None, examples=["Philadelphia"])
-    cuisine: str | None = Field(None, examples=["Italian"])
-    price: list[int] = Field(default_factory=list, description="Yelp price levels 1-4 ($-$$$$)")
-    dietary: list[DietaryOption] = Field(default_factory=list)
-    k: int = 10
+    query: str = Field(
+        ..., min_length=2, max_length=MAX_QUERY_CHARS,
+        examples=["quiet date-night spot with great pasta"],
+    )
+    city: str | None = Field(None, max_length=80, examples=["Philadelphia"])
+    cuisine: str | None = Field(None, max_length=80, examples=["Italian"])
+    price: list[Annotated[int, Field(ge=1, le=4)]] = Field(
+        default_factory=list, max_length=4, description="Yelp price levels 1-4 ($-$$$$)"
+    )
+    dietary: list[DietaryOption] = Field(default_factory=list, max_length=5)
+    k: int = Field(10, ge=1, le=MAX_RESULTS)
 
 
 class AspectScore(BaseModel):
@@ -84,8 +93,8 @@ class RestaurantDetail(RestaurantCard):
 
 
 class FeedbackIn(BaseModel):
-    business_id: str
-    query: str
+    business_id: str = Field(..., max_length=64)
+    query: str = Field(..., max_length=MAX_QUERY_CHARS)
     helpful: bool
 
 

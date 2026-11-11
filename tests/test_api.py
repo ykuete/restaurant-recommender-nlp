@@ -1,11 +1,13 @@
 import pytest
 from fastapi.testclient import TestClient
 
+from api.limits import limiter
 from api.main import create_app
 
 
 @pytest.fixture
 def client(engine, tmp_path, monkeypatch):
+    limiter.reset()
     monkeypatch.setattr("recommender.config.LLM_PROVIDER", "none")
     app = create_app(lambda: engine, database_url=f"sqlite:///{tmp_path / 'feedback.db'}")
     with TestClient(app) as c:
@@ -69,3 +71,25 @@ def test_llm_failure_falls_back_to_template(client, monkeypatch):
     monkeypatch.setattr("recommender.summary._call_llm", broken)
     body = client.post("/api/recommend", json={"query": "quiet pasta", "k": 2}).json()
     assert all(r["summary"].startswith("Reviewers rate") for r in body["results"])
+
+
+@pytest.mark.parametrize(
+    "payload",
+    [
+        {"query": "x" * 301},
+        {"query": "pasta", "k": 21},
+        {"query": "pasta", "price": [5]},
+        {"query": "pasta", "dietary": ["carnivore"]},
+    ],
+)
+def test_rejects_out_of_range_input(client, payload):
+    assert client.post("/api/recommend", json=payload).status_code == 422
+
+
+def test_recommend_is_rate_limited(client):
+    codes = [
+        client.post("/api/recommend", json={"query": "pasta", "k": 1}).status_code
+        for _ in range(31)
+    ]
+    assert codes[:30] == [200] * 30
+    assert codes[30] == 429

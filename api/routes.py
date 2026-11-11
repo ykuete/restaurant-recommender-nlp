@@ -1,11 +1,14 @@
-"""API routes, mounted under /api."""
+"""API routes, mounted under /api.
 
-from __future__ import annotations
+No `from __future__ import annotations` here: the rate-limit decorator
+wraps the endpoints, and FastAPI must still see the real type objects.
+"""
 
 from fastapi import APIRouter, HTTPException, Request, status
 from starlette.concurrency import run_in_threadpool
 
 from api.db import save_feedback
+from api.limits import RECOMMEND_LIMIT, limiter
 from api.schemas import (
     FeedbackIn,
     Health,
@@ -28,6 +31,7 @@ def to_filters(req: RecommendRequest) -> Filters:
 
 
 @router.post("/recommend", response_model=RecommendResponse)
+@limiter.limit(RECOMMEND_LIMIT)
 async def recommend(req: RecommendRequest, request: Request) -> RecommendResponse:
     """Ranked restaurants for a plain-language request, each with a summary."""
     engine = get_engine(request)
@@ -54,6 +58,7 @@ def restaurant(business_id: str, request: Request) -> RestaurantDetail:
 
 
 @router.post("/feedback", status_code=status.HTTP_201_CREATED)
+@limiter.limit("60/minute")
 def feedback(item: FeedbackIn, request: Request) -> dict:
     """Store a helpful / not helpful rating for evaluation."""
     save_feedback(request.app.state.db, item.business_id, item.query, item.helpful)

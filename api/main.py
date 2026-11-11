@@ -12,8 +12,11 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
 
 from api import db
+from api.limits import limiter
 from api.routes import router
 from recommender import config
 from recommender.ranking import Engine
@@ -49,6 +52,8 @@ def create_app(
         allow_methods=["GET", "POST"],
         allow_headers=["*"],
     )
+    app.state.limiter = limiter
+    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
     app.include_router(router, prefix="/api")
     return app
 
