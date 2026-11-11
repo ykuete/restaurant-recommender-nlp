@@ -66,7 +66,7 @@ export default function ResultsView() {
       </div>
 
       <div className="mx-auto flex max-w-6xl flex-wrap items-start gap-7 px-6 pb-16 pt-8">
-        <aside className="flex max-w-full flex-[1_1_280px] flex-col gap-5">
+        <aside className="flex max-w-full flex-[1_1_280px] flex-col gap-5 max-lg:order-last">
           <section className="rounded-2xl border border-line bg-white p-5">
             <h2 className="mb-1 font-semibold">How we read your request</h2>
             <p className="mb-3 text-sm text-muted">Aspects found in your words weigh most in the ranking.</p>
