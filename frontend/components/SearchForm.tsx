@@ -6,16 +6,7 @@ import { toSearchParams } from "@/lib/format";
 import type { DietaryOption } from "@/lib/types";
 
 export const CITIES = [
-  "Philadelphia",
-  "Tampa",
-  "Indianapolis",
-  "Nashville",
-  "Tucson",
-  "New Orleans",
-  "Saint Louis",
-  "Reno",
-  "Edmonton",
-  "Boise",
+  "Philadelphia"
 ];
 export const CUISINES = [
   "Italian",
