@@ -23,17 +23,46 @@ RESTAURANT_COLUMNS = [
     "categories",
 ]
 
+# Yelp spells some cities several ways. Map the variants to one name so the
+# API's city filter matches the frontend's city list.
+CITY_ALIASES = {
+    "st. louis": "Saint Louis",
+    "st louis": "Saint Louis",
+    "saint louis": "Saint Louis",
+}
+
+def normalize_city(name: object) -> object:
+    """Trim a city name and replace known spelling variants."""
+    if not isinstance(name, str):
+        return name
+    clean = " ".join(name.split())
+    return CITY_ALIASES.get(clean.casefold(), clean)
+
+def as_city_list(city: str | Sequence[str] | None) -> list[str]:
+    """Accept one city, several cities, or None (all cities)."""
+    if city is None:
+        return []
+    if isinstance(city, str):
+        return [city]
+    return list(city)
 
 def load_businesses(path: str | Path) -> pd.DataFrame:
     """Read the Yelp business file (one JSON object per line)."""
     return pd.read_json(path, lines=True)
 
 
-def filter_restaurants(business: pd.DataFrame, city: str | None = None) -> pd.DataFrame:
-    """Keep businesses whose categories mention 'Restaurant', optionally one city."""
+def filter_restaurants(
+    business: pd.DataFrame, city: str | Sequence[str] | None = None
+) -> pd.DataFrame:
+    """Keep businesses whose categories mention 'Restaurant', optionally only some cities.
+
+    City names are normalized (see CITY_ALIASES) before filtering and in the output.
+    """
     restaurants = business[business["categories"].str.contains("Restaurant", na=False)]
-    if city:
-        restaurants = restaurants[restaurants["city"].str.casefold() == city.casefold()]
+    restaurants = restaurants.assign(city=restaurants["city"].map(normalize_city))
+    wanted = {normalize_city(c).casefold() for c in as_city_list(city)}
+    if wanted:
+        restaurants = restaurants[restaurants["city"].str.casefold().isin(wanted)]
     return restaurants[RESTAURANT_COLUMNS].reset_index(drop=True)
 
 
@@ -52,7 +81,7 @@ def load_reviews(
 def build_dataset(
     data_dir: str | Path,
     out_dir: str | Path,
-    city: str | None = None,
+    city: str | Sequence[str] | None = None,
     business_file: str = "yelp_academic_dataset_business.json",
     review_file: str = "yelp_academic_dataset_review.json",
     restaurants_name: str = "restaurants.parquet",
