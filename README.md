@@ -1,6 +1,6 @@
 # TasteLens — Restaurant Recommender (NLP Text Analysis)
 
-**Live app:** <LIVE_FRONTEND_URL> · **API docs:** <LIVE_API_URL>/docs
+**Live app:** <LIVE_FRONTEND_URL>→ https://tastelens-seven.vercel.app · **API docs:** <LIVE_API_URL>→ https://restaurant-recommender-nlp.onrender.com
 
 A restaurant recommender that reads what reviewers actually say. Star ratings hide nuance: a 4-star review can praise the food and complain about slow service. TasteLens scores each restaurant on food, service, ambience, price, noise and wait time from review text, then matches those scores to a plain-language request such as *"quiet date-night spot with great pasta"*.
 
