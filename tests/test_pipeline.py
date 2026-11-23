@@ -22,13 +22,14 @@ BUSINESS = _business(
         {"business_id": "c", "city": "Reno", "categories": "Restaurants"},
         {"business_id": "d", "city": "St. Louis", "categories": "Restaurants, BBQ"},
         {"business_id": "e", "city": "Tampa", "categories": "Hair Salons"},
+        {"business_id": "f", "city": "TAMPA", "categories": "Restaurants, Pizza"},
     ]
 )
 
 
 def test_no_city_keeps_every_restaurant():
     out = filter_restaurants(BUSINESS)
-    assert set(out["business_id"]) == {"a", "b", "c", "d"}
+    assert set(out["business_id"]) == {"a", "b", "c", "d", "f"}
 
 
 def test_one_city_still_works():
@@ -38,7 +39,13 @@ def test_one_city_still_works():
 
 def test_several_cities():
     out = filter_restaurants(BUSINESS, ["Philadelphia", "Tampa"])
-    assert set(out["business_id"]) == {"a", "b"}
+    assert set(out["business_id"]) == {"a", "b", "f"}
+
+
+def test_city_case_variants_use_the_common_spelling():
+    out = filter_restaurants(BUSINESS, ["Tampa"])
+    assert set(out["city"]) == {"Tampa"}
+    assert len(out) == 2
 
 
 def test_city_aliases_are_merged():

@@ -7,6 +7,7 @@ scripts and tests can call it with any paths.
 from __future__ import annotations
 
 import json
+from collections.abc import Sequence
 from pathlib import Path
 
 import pandas as pd
@@ -23,6 +24,7 @@ RESTAURANT_COLUMNS = [
     "categories",
 ]
 
+
 # Yelp spells some cities several ways. Map the variants to one name so the
 # API's city filter matches the frontend's city list.
 CITY_ALIASES = {
@@ -31,12 +33,24 @@ CITY_ALIASES = {
     "saint louis": "Saint Louis",
 }
 
+
 def normalize_city(name: object) -> object:
     """Trim a city name and replace known spelling variants."""
     if not isinstance(name, str):
         return name
     clean = " ".join(name.split())
     return CITY_ALIASES.get(clean.casefold(), clean)
+
+
+def unify_city_case(cities: pd.Series) -> pd.Series:
+    """Spell each city the way most of its rows do: 'TAMPA' and 'tampa' become 'Tampa'."""
+    valid = cities.dropna()
+    if valid.empty:
+        return cities
+    keys = valid.str.casefold()
+    best = valid.groupby(keys).agg(lambda names: names.value_counts().index[0])
+    return cities.map(lambda c: best.get(c.casefold(), c) if isinstance(c, str) else c)
+
 
 def as_city_list(city: str | Sequence[str] | None) -> list[str]:
     """Accept one city, several cities, or None (all cities)."""
@@ -45,6 +59,7 @@ def as_city_list(city: str | Sequence[str] | None) -> list[str]:
     if isinstance(city, str):
         return [city]
     return list(city)
+
 
 def load_businesses(path: str | Path) -> pd.DataFrame:
     """Read the Yelp business file (one JSON object per line)."""
@@ -59,7 +74,7 @@ def filter_restaurants(
     City names are normalized (see CITY_ALIASES) before filtering and in the output.
     """
     restaurants = business[business["categories"].str.contains("Restaurant", na=False)]
-    restaurants = restaurants.assign(city=restaurants["city"].map(normalize_city))
+    restaurants = restaurants.assign(city=unify_city_case(restaurants["city"].map(normalize_city)))
     wanted = {normalize_city(c).casefold() for c in as_city_list(city)}
     if wanted:
         restaurants = restaurants[restaurants["city"].str.casefold().isin(wanted)]
