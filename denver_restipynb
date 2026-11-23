@@ -1,0 +1,128 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyMtwboNVnNzOh4KElNXTjxn",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/ykuete/restaurant-recommender-nlp/blob/embed-model/denver_restipynb\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 1,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 402
+        },
+        "id": "HfWxhEy5N8bO",
+        "outputId": "b069a491-7798-4c2c-e762-f090966d2661"
+      },
+      "outputs": [
+        {
+          "output_type": "error",
+          "ename": "HTTPError",
+          "evalue": "406 Client Error: Not Acceptable for url: https://overpass-api.de/api/interpreter?data=%0A%5Bout%3Ajson%5D%5Btimeout%3A180%5D%3B%0A%28%0A++nwr%5B%22amenity%22%3D%22restaurant%22%5D%2839.55%2C-105.25%2C39.95%2C-104.55%29%3B%0A++nwr%5B%22amenity%22%3D%22cafe%22%5D%2839.55%2C-105.25%2C39.95%2C-104.55%29%3B%0A++nwr%5B%22amenity%22%3D%22fast_food%22%5D%2839.55%2C-105.25%2C39.95%2C-104.55%29%3B%0A%29%3B%0Aout+center+tags%3B%0A",
+          "traceback": [
+            "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+            "\u001b[0;31mHTTPError\u001b[0m                                 Traceback (most recent call last)",
+            "\u001b[0;32m/tmp/ipykernel_12562/2956074262.py\u001b[0m in \u001b[0;36m<cell line: 0>\u001b[0;34m()\u001b[0m\n\u001b[1;32m     23\u001b[0m )\n\u001b[1;32m     24\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m---> 25\u001b[0;31m \u001b[0mresponse\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mraise_for_status\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m     26\u001b[0m \u001b[0melements\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mresponse\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mjson\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;34m\"elements\"\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     27\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32m/usr/local/lib/python3.13/dist-packages/requests/models.py\u001b[0m in \u001b[0;36mraise_for_status\u001b[0;34m(self)\u001b[0m\n\u001b[1;32m   1024\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1025\u001b[0m         \u001b[0;32mif\u001b[0m \u001b[0mhttp_error_msg\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m-> 1026\u001b[0;31m             \u001b[0;32mraise\u001b[0m \u001b[0mHTTPError\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mhttp_error_msg\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mresponse\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mself\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m   1027\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1028\u001b[0m     \u001b[0;32mdef\u001b[0m \u001b[0mclose\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mself\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;31mHTTPError\u001b[0m: 406 Client Error: Not Acceptable for url: https://overpass-api.de/api/interpreter?data=%0A%5Bout%3Ajson%5D%5Btimeout%3A180%5D%3B%0A%28%0A++nwr%5B%22amenity%22%3D%22restaurant%22%5D%2839.55%2C-105.25%2C39.95%2C-104.55%29%3B%0A++nwr%5B%22amenity%22%3D%22cafe%22%5D%2839.55%2C-105.25%2C39.95%2C-104.55%29%3B%0A++nwr%5B%22amenity%22%3D%22fast_food%22%5D%2839.55%2C-105.25%2C39.95%2C-104.55%29%3B%0A%29%3B%0Aout+center+tags%3B%0A"
+          ]
+        }
+      ],
+      "source": [
+        "\n",
+        "import requests\n",
+        "import pandas as pd\n",
+        "\n",
+        "OVERPASS_URL = \"https://overpass-api.de/api/interpreter\"\n",
+        "\n",
+        "# Denver metropolitan area bounding box\n",
+        "bbox = \"39.55,-105.25,39.95,-104.55\"\n",
+        "\n",
+        "query = f\"\"\"\n",
+        "[out:json][timeout:180];\n",
+        "(\n",
+        "  nwr[\"amenity\"=\"restaurant\"]({bbox});\n",
+        "  nwr[\"amenity\"=\"cafe\"]({bbox});\n",
+        "  nwr[\"amenity\"=\"fast_food\"]({bbox});\n",
+        ");\n",
+        "out center tags;\n",
+        "\"\"\"\n",
+        "\n",
+        "response = requests.get(\n",
+        "    OVERPASS_URL,\n",
+        "    params={\"data\": query},\n",
+        "    timeout=200\n",
+        ")\n",
+        "\n",
+        "response.raise_for_status()\n",
+        "elements = response.json()[\"elements\"]\n",
+        "\n",
+        "rows = []\n",
+        "\n",
+        "for element in elements:\n",
+        "    tags = element.get(\"tags\", {})\n",
+        "\n",
+        "    if not tags.get(\"name\"):\n",
+        "        continue\n",
+        "\n",
+        "    # Nodes have direct coordinates.\n",
+        "    # Ways and relations have center coordinates.\n",
+        "    if \"lat\" in element:\n",
+        "        lat = element[\"lat\"]\n",
+        "        lon = element[\"lon\"]\n",
+        "    else:\n",
+        "        center = element.get(\"center\", {})\n",
+        "        lat = center.get(\"lat\")\n",
+        "        lon = center.get(\"lon\")\n",
+        "\n",
+        "    address = tags.get(\"addr:street\")\n",
+        "\n",
+        "    rows.append({\n",
+        "        \"osm_id\": element[\"id\"],\n",
+        "        \"name\": tags.get(\"name\"),\n",
+        "        \"type\": tags.get(\"amenity\"),\n",
+        "        \"cuisine\": tags.get(\"cuisine\"),\n",
+        "        \"latitude\": lat,\n",
+        "        \"longitude\": lon,\n",
+        "        \"street\": address,\n",
+        "        \"house_number\": tags.get(\"addr:housenumber\"),\n",
+        "        \"city\": tags.get(\"addr:city\"),\n",
+        "        \"postcode\": tags.get(\"addr:postcode\"),\n",
+        "        \"website\": tags.get(\"website\")\n",
+        "    })\n",
+        "\n",
+        "df = pd.DataFrame(rows)\n",
+        "\n",
+        "df = df.drop_duplicates(subset=[\"osm_id\"])\n",
+        "\n",
+        "df.to_csv(\"denver_restaurants.csv\", index=False)\n",
+        "\n",
+        "print(\"Restaurants collected:\", len(df))\n",
+        "print(df.head())\n"
+      ]
+    }
+  ]
+}
